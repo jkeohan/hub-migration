@@ -93,38 +93,6 @@ const promptForActionType = () => {
 	);
 };
 
-function execCallback(err, stdout, stderr) {
-	if (err) {
-		writeLog(`err: ${err}\nstderr: ${stderr}`);
-		console.error(`Error: ${err.message}`);
-		return;
-	}
-	writeLog(`stdout: ${stdout}`);
-	console.log(stdout);
-	console.error(stderr);
-	promptNextCommand();
-}
-
-// Retrieve file in settings and concatenate it to ./settings/
-function settingsPath(callBack) {
-	return new Promise((resolve, reject) => {
-		// Define the path to the settings folder
-		const settingsDir = './settings';
-		let filePath = '';
-		// Read the contents of the ./settings folder
-		fs.readdir(settingsDir, (err, files) => {
-			if (err) {
-				reject('Error reading the settings directory:', err);
-				return;
-			}
-
-			const filename = files[0];
-			filePath = path.join(settingsDir, filename);
-
-			resolve(filePath);
-		});
-	});
-}
 
 // Add commands based on import/export selection
 const addCommandsForAction = (actionType) => {
@@ -234,6 +202,41 @@ const promptNextCommand = () => {
 	}
 };
 
+// aggregate all exec callbacks into one reusable function
+function execCallback(err, stdout, stderr) {
+	if (err) {
+		writeLog(`err: ${err}\nstderr: ${stderr}`);
+		console.error(`Error: ${err.message}`);
+		return;
+	}
+	writeLog(`stdout: ${stdout}`);
+	console.log(stdout);
+	console.error(stderr);
+	promptNextCommand();
+}
+
+// Retrieve file in settings and concatenate it to ./settings/
+function settingsPath(callBack) {
+	return new Promise((resolve, reject) => {
+		// Define the path to the settings folder
+		const settingsDir = './settings';
+		let filePath = '';
+		// Read the contents of the ./settings folder
+		fs.readdir(settingsDir, (err, files) => {
+			if (err) {
+				reject('Error reading the settings directory:', err);
+				return;
+			}
+
+			const filename = files[0];
+			filePath = path.join(settingsDir, filename);
+
+			resolve(filePath);
+		});
+	});
+}
+
+
 // Start the sequence with the prompt for import or export
-console.log('Welcome to the command sequence script!');
+// console.log('Welcome to the Hub Migration Script!');
 promptForActionType();
